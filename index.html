@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Ear Training"/>
+  <meta name="application-name" content="Ear Training"/>
+  <meta name="theme-color" content="#1a1a2e"/>
+  <title>Ear Training — Solfège</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="apple-touch-icon" href="icons/icon-192.png"/>
+  <link rel="icon" type="image/png" href="icons/icon-192.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="app" id="app">
+
+    <!-- HEADER -->
+    <header class="header">
+      <span class="header-title">Ear Training</span>
+      <span class="header-streak" id="header-streak">0 day streak</span>
+    </header>
+
+    <!-- NAV -->
+    <nav class="nav">
+      <button class="nav-btn active" data-panel="home">
+        <svg viewBox="0 0 20 20"><path d="M10 2L2 8v10h5v-6h6v6h5V8L10 2z" fill="currentColor"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-btn" data-panel="solfege">
+        <svg viewBox="0 0 20 20"><path d="M9 4a1 1 0 012 0v8a3 3 0 11-2-2.83V4z" fill="currentColor"/></svg>
+        <span>Solfège</span>
+      </button>
+      <button class="nav-btn" data-panel="exercise">
+        <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 7l5 3-5 3V7z" fill="currentColor"/></svg>
+        <span>Practice</span>
+      </button>
+      <button class="nav-btn" data-panel="intervals">
+        <svg viewBox="0 0 20 20"><path d="M4 16V8m4 8V4m4 12V10m4 6V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+        <span>Intervals</span>
+      </button>
+      <button class="nav-btn" data-panel="curriculum">
+        <svg viewBox="0 0 20 20"><path d="M4 4h12v2H4zm0 4h12v2H4zm0 4h8v2H4z" fill="currentColor"/></svg>
+        <span>Plan</span>
+      </button>
+      <button class="nav-btn" data-panel="progress">
+        <svg viewBox="0 0 20 20"><path d="M3 17l4-6 4 3 4-8 4 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+        <span>Progress</span>
+      </button>
+    </nav>
+
+    <!-- PANELS -->
+    <main class="main">
+
+      <!-- HOME -->
+      <div id="home" class="panel active">
+        <div class="hero">
+          <h1>Ear Training</h1>
+          <p class="hero-sub">Solfège · Relative pitch · Piano fluency</p>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-label">Sessions</div><div class="stat-val" id="h-sessions">0</div></div>
+          <div class="stat-card"><div class="stat-label">Accuracy</div><div class="stat-val" id="h-accuracy">—</div></div>
+          <div class="stat-card"><div class="stat-label">Streak</div><div class="stat-val" id="h-streak">0d</div></div>
+        </div>
+        <div class="card">
+          <div class="section-label">Today's focus</div>
+          <div id="todays-focus"></div>
+        </div>
+        <div class="tip-box" id="home-tip"></div>
+        <div class="card">
+          <div class="section-label">Learning path</div>
+          <div class="prog-row"><div class="prog-label"><span>Phase 1 — Scale degrees</span><span id="ph1-pct">0%</span></div><div class="prog-track"><div class="prog-fill green" id="ph1-bar" style="width:0%"></div></div></div>
+          <div class="prog-row"><div class="prog-label"><span>Phase 2 — Intervals</span><span id="ph2-pct">0%</span></div><div class="prog-track"><div class="prog-fill gold" id="ph2-bar" style="width:0%"></div></div></div>
+          <div class="prog-row"><div class="prog-label"><span>Phase 3 — Melody</span><span id="ph3-pct">0%</span></div><div class="prog-track"><div class="prog-fill coral" id="ph3-bar" style="width:0%"></div></div></div>
+          <div class="prog-row"><div class="prog-label"><span>Phase 4 — Chords</span><span id="ph4-pct">0%</span></div><div class="prog-track"><div class="prog-fill blue" id="ph4-bar" style="width:0%"></div></div></div>
+        </div>
+        <button class="cta-btn" onclick="showPanel('exercise')">Start today's practice →</button>
+      </div>
+
+      <!-- SOLFÈGE -->
+      <div id="solfege" class="panel">
+        <h2>Solfège reference</h2>
+        <div class="toggle-row">
+          <button class="toggle-btn active" onclick="setDoMode('major',this)">Major</button>
+          <button class="toggle-btn" onclick="setDoMode('minor',this)">Natural minor</button>
+        </div>
+        <p class="hint">Tap any row to hear the pitch.</p>
+        <table class="sol-table" id="sol-table"></table>
+        <div class="section-label" style="margin-top:20px">Hear the scale</div>
+        <div class="piano-wrap"><div class="piano" id="piano"></div></div>
+        <div class="btn-row">
+          <button class="outline-btn" onclick="playScale(false)">▶ Ascending</button>
+          <button class="outline-btn" onclick="playScale(true)">◀ Descending</button>
+        </div>
+        <div class="section-label" style="margin-top:20px">Tonal characters</div>
+        <div id="sol-chars"></div>
+      </div>
+
+      <!-- EXERCISE -->
+      <div id="exercise" class="panel">
+        <h2>Practice</h2>
+        <div class="toggle-row">
+          <button class="toggle-btn active" onclick="setExMode('scale',this)">Scale degree</button>
+          <button class="toggle-btn" onclick="setExMode('interval',this)">Interval</button>
+          <button class="toggle-btn" onclick="setExMode('melody',this)">Melody</button>
+        </div>
+        <div class="card">
+          <p class="hint" id="ex-instructions">Press Play to hear a tone, then identify its solfège degree in C major.</p>
+          <div class="btn-row">
+            <button class="play-btn" onclick="playExercise()">▶ Play tone</button>
+            <button class="outline-btn" onclick="playReference()">Hear Do</button>
+          </div>
+          <div class="ex-grid" id="ex-choices"></div>
+          <div class="feedback" id="ex-feedback"></div>
+          <div class="ex-footer">
+            <span class="score-label">Score: <strong id="ex-score">0</strong> / <strong id="ex-total">0</strong></span>
+            <button class="text-btn" onclick="nextExercise()">Next →</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-label">Session stats</div>
+          <div class="stats-row">
+            <div class="stat-card"><div class="stat-label">Correct</div><div class="stat-val green-text" id="ses-correct">0</div></div>
+            <div class="stat-card"><div class="stat-label">Wrong</div><div class="stat-val coral-text" id="ses-wrong">0</div></div>
+            <div class="stat-card"><div class="stat-label">Accuracy</div><div class="stat-val" id="ses-acc">—</div></div>
+          </div>
+          <button class="outline-btn" style="margin-top:12px;width:100%" onclick="logSession()">+ Log this session</button>
+        </div>
+      </div>
+
+      <!-- INTERVALS -->
+      <div id="intervals" class="panel">
+        <h2>Intervals</h2>
+        <p class="hint">Tap any row to hear it. Each interval has a memorable song mnemonic.</p>
+        <div id="interval-list"></div>
+        <div class="section-label" style="margin-top:20px">Interval player</div>
+        <select id="int-select" class="select"></select>
+        <div class="btn-row" style="margin-top:10px">
+          <button class="play-btn" onclick="playInterval(false)">▶ Harmonic</button>
+          <button class="outline-btn" onclick="playInterval(true)">▶ Melodic</button>
+        </div>
+      </div>
+
+      <!-- CURRICULUM -->
+      <div id="curriculum" class="panel">
+        <h2>12-week plan</h2>
+        <p class="hint">Tap any week to expand it. 15–20 min daily beats 2-hour weekend sessions.</p>
+        <div class="tip-box">Your brain consolidates pitch memory during sleep — consistency is everything.</div>
+        <div id="curriculum-weeks"></div>
+        <div class="section-label" style="margin-top:20px">Daily template</div>
+        <div class="card">
+          <div class="day-row"><span class="day-time">5 min</span><div><strong>Warm-up</strong> — sing the scale over a drone in C</div></div>
+          <div class="day-row"><span class="day-time">10 min</span><div><strong>Core drill</strong> — Practice tab, current phase</div></div>
+          <div class="day-row"><span class="day-time">5 min</span><div><strong>Applied</strong> — sight-sing 4 bars or analyse a song by ear</div></div>
+          <div class="day-row" style="border:none"><span class="day-time">3 min</span><div><strong>Reflect</strong> — note what felt uncertain today</div></div>
+        </div>
+      </div>
+
+      <!-- PROGRESS -->
+      <div id="progress" class="panel">
+        <h2>Progress</h2>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-label">Total sessions</div><div class="stat-val" id="p-sessions">0</div></div>
+          <div class="stat-card"><div class="stat-label">Avg accuracy</div><div class="stat-val" id="p-avg">—</div></div>
+        </div>
+        <div class="section-label" style="margin-top:16px">Per-degree mastery</div>
+        <div id="degree-progress"></div>
+        <div class="section-label" style="margin-top:16px">Session log</div>
+        <div id="session-log"><p class="hint">No sessions yet. Complete a practice and tap "Log this session".</p></div>
+        <button class="text-btn danger" style="margin-top:12px" onclick="clearLog()">Clear all progress</button>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
